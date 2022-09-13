@@ -15,6 +15,7 @@ vim.o.softtabstop = 2
 vim.o.expandtab = true
 vim.o.smarttab = true
 vim.o.smartindent = true
+
 vim.o.autoindent = true
 vim.o.cursorline = true
 vim.o.clipboard = "unnamedplus"
@@ -28,6 +29,10 @@ vim.o.updatetime = 250
 vim.wo.signcolumn = 'yes'
 vim.cmd "set noshowmode"
 vim.o.termguicolors = true
+
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
 
 -- Install packer
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
@@ -60,6 +65,7 @@ require('packer').startup(function()
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
 
   use { "ellisonleao/gruvbox.nvim" }
+  use 'folke/tokyonight.nvim'
 
   use { 'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons', opt = true }
@@ -79,20 +85,56 @@ require('packer').startup(function()
 
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
   use 'windwp/nvim-autopairs'
-  use 'kyazdani42/nvim-tree.lua' -- Tree plugin
+  -- use 'kyazdani42/nvim-tree.lua' -- Tree plugin
+  use 'TimUntersberger/neogit'
   use 'github/copilot.vim'
 end)
 
+vim.g.tokyonight_transparent_sidebar = true
+vim.g.tokyonight_transparent = true
+vim.g.tokyonight_italic_comments = true
+vim.opt.background = "dark"
+
 -- theme
-vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd([[colorscheme gruvbox]])
+vim.cmd([[colorscheme tokyonight]])
+
+local hl = function(thing, opts)
+    vim.api.nvim_set_hl(0, thing, opts)
+end
+
+hl("SignColumn", {
+    bg = "none",
+})
+
+hl("ColorColumn", {
+    ctermbg = 0,
+    bg = "#555555",
+})
+
+hl("CursorLineNR", {
+    bg = "None"
+})
+
+hl("Normal", {
+    bg = "none"
+})
+
+hl("LineNr", {
+    fg = "#5eacd3"
+})
+
+hl("netrwDir", {
+    fg = "#5eacd3"
+})
 
 require 'lualine'.setup {
-  -- options = {
-  --   globalstatus = true,
-  --   theme = 'auto',
-  --   section_separators = '',
-  --   component_separators = '',
-  -- }
+  options = {
+    globalstatus = true,
+    theme = 'auto',
+    -- section_separators = '',
+    -- component_separators = '',
+  }
 }
 
 --Remap space as leader key
@@ -107,8 +149,8 @@ vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true,
 -- Y yank until the end of line  (note: this is now a default on master)
 vim.api.nvim_set_keymap('n', 'Y', 'y$', { noremap = true })
 
-vim.api.nvim_set_keymap('n', '<c-t>', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<c-f>', ':NvimTreeFocus<CR>', {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('n', '<c-t>', ':NvimTreeToggle<CR>', {noremap = true, silent = true})
+-- vim.api.nvim_set_keymap('n', '<c-f>', ':NvimTreeFocus<CR>', {noremap = true, silent = true})
 
 
 -- Highlight on yank
@@ -325,7 +367,9 @@ cmp.setup {
 
 require("bufferline").setup {}
 require("nvim-autopairs").setup {}
-require("nvim-tree").setup {}
+-- require("nvim-tree").setup {}
+
+require('neogit').setup {}
 
 -- settings for yaml editing
 vim.api.nvim_command([[
